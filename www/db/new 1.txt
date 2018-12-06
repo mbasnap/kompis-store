@@ -1,0 +1,44 @@
+<?php 
+//подключение к базе 
+$tableName = 123;
+$db = new SQLite3('my.db');
+$db->exec("CREATE TABLE IF NOT EXISTS '$tableName'
+               ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 
+               'name' VARCHAR(20), 
+               'age' INT(3), 
+               'city' VARCHAR(50))");
+
+//Добавить пользователя
+function add($name,$age,$city){
+  // $db = new SQLite3('my.db');
+  $db->query("INSERT INTO $tableName VALUES (NULL,'$name',$age,'$city')");
+  $db->close();
+}
+
+//Редактировать пользователя
+function update($id,$name,$age,$city){
+  // $db = new SQLite3('my.db');
+  $db->exec("UPDATE $tableName SET name='$name', age='$age', city='$city' WHERE id='$id'");
+  $db->close();
+}
+
+//Удалить пользователя
+function del($id){
+  // $db = new SQLite3('my.db');
+  $db->query("DELETE FROM $tableName WHERE id=$id");
+  $db->close();
+}
+
+//Показать всех пользователей
+
+function getAll(){
+  // $res = array(); 
+  // $results = $db->query("SELECT * FROM $tableName");
+  // while ($row = $results->fetchArray()) {
+    // $res[] = json_encode($row);
+  // }
+  // $db->close;
+  return $tableName;
+}
+
+ ?>
