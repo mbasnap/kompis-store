@@ -1,18 +1,16 @@
 ﻿<?php
-	include_once('DataBase.php');
+	include_once('Post.php');
+	include_once('Menu.php');
+	include_once('Company.php');
 	$_POST = json_decode(file_get_contents('php://input'), true);	
 
-	function getPostByName(){
-		 $db= new DataBase('posts');
-		 $res = $db->selectByFieldValue("name", $_POST['name']);
-		return $res['city'];
+	function get_Posts() {
+		return Post::getAll();
 	}
-	function getAllPosts(){
-		$db= new DataBase('posts');
-		return json_encode($db->getAll());
+	function get_menu() {
+		return Menu::getMenu();
 	}
-	function getMenu(){
-		$db= new DataBase('menu');
-		return json_encode($db->getAll());
+	function get_company() {
+		return Company::getCompany();
 	}
  ?>
