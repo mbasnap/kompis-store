@@ -3,7 +3,7 @@ include_once('functions.php');
 class DataBase extends SQLite3{
 	function __construct(){
 		$this->open('kompis.com');
-		$this->init('company');
+		$this->company = $this->init('company');
 		// $this->table = $table;
 	}
 	// public function selectByFieldValue($field, $value, $allResults = false){
@@ -16,13 +16,13 @@ class DataBase extends SQLite3{
 		return "SELECT * FROM '$table'";
 	}
 	function getById($table, $id){
-		$res = $this->get(array('id'=>$id));
-		return $res[0];
+		$res = $this->get($table, array('id'=>$id));
+		return $res;
 	}
 	function get($table, $where = false){
 		$string = $this->selectAll($table);
 		if($where) $string = $string.$this->getString(' WHERE ', $where);
-		//    echo $string;
+		//   echo $string;
 		$this->resultSet = $this->query($string);
 		return fetchArray($this->resultSet);
 	}
@@ -33,12 +33,12 @@ class DataBase extends SQLite3{
 		}
 		 return $string;
 	}
-	private function init($name) {
-		$this->$name = array();
-		$this->get($name);	
+	private function init($name, $res  = array()) {
+		$this->get($name);
 		while ($row = $this->resultSet->fetchArray()) {
-			$this->$name[$row['name']] = $row['value'];
+			$res[$row['name']] = $row['value'];
 		 }
+		return $res;
 	}
 }
 
