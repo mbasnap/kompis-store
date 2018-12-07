@@ -14,12 +14,9 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 	}
 	function get_company(){
 		$db = new DataBase();
-		$db->get('company');
-		$company = fetchObj($db->resultSet);
-		$db->get('address', array('id' => $company['address_id']));
-		$company['address'] = fetchArray($db->resultSet, 0);
-		$db->get('phone', array('id' => $company['phone_id']));
-		$company['phone'] = fetchArray($db->resultSet, 0);
+		$company = $db ->company;
+		// $company['address'] = $db->getById('address', $company['address_id']);
+		// $company['phone'] = $db->getById('phone', $company['phone_id']);
 		return $company;		
 	}
 
