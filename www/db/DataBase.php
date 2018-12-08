@@ -6,18 +6,16 @@ class DataBase extends SQLite3{
 		$this->company = $this->init('company');
 		// $this->table = $table;
 	}
-	// public function selectByFieldValue($field, $value, $allResults = false){
-		 // $resultSet = $this->query("SELECT * FROM '$this->table' WHERE $field = '$value'");
-		 // $res = self::toAttay($resultSet);
-		 // if($allResults) return $res;
-		 // else return $res[0];
-	// }
 	function selectAll($table){
 		return "SELECT * FROM '$table'";
 	}
+	function getByGrope($table, $id){
+		$res = $this->get($table, array('group_id'=>$id));
+		return $res;
+	}
 	function getById($table, $id){
 		$res = $this->get($table, array('id'=>$id));
-		return $res;
+		return $res[0];
 	}
 	function get($table, $where = false){
 		$string = $this->selectAll($table);

@@ -1,10 +1,10 @@
 <?php
-	function fetchArray($resultSet, $index = false){
+	function fetchArray($resultSet){
 		$res = array();
 		 while ($row = $resultSet->fetchArray()) {
 			$res[] = $row;
 		 }
-		 return $res[$index];
+		 return $res;
 	}
 	// 	function fetchObj($resultSet, $res = array()){
 	// 	 while ($row = $resultSet->fetchArray()) {
