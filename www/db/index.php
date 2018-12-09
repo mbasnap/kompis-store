@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin:*");
+// header("Access-Control-Allow-Origin:*");
 include_once('actions.php');
 if($_GET['get']) echo action('get_'.$_GET['get']);
 if($_GET['add']) echo action('add_'.$_GET['add']);
