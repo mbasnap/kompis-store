@@ -1,4 +1,5 @@
 <?php 
+https://habr.com/company/ruvds/blog/340926/
 //подключение к базе 
 $tableName = 123;
 $db = new SQLite3('my.db');

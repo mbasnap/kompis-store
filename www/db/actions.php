@@ -11,6 +11,10 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 		$db = new DataBase();
 		return $db->get('mainMenu');
 	}
+	function get_sideBarMenu(){
+		$db = new DataBase();
+		return $db->get('sideBarMenu');
+	}
 	function get_lastNews(){
 		$db = new DataBase();
 		return $db->get('news');	
