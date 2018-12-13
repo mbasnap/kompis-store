@@ -3,9 +3,18 @@
 include_once('DataBase.php');
 $_POST = json_decode(file_get_contents('php://input'), true);	
 
-	function get_posts(){
+	function get_post(){
 		$db = new DataBase();
 		return  $db->get('post');
+	}
+	function update_post(){
+		$db = new DataBase();
+		$id = $_POST['id'];
+		$name = $_POST['name'];
+		$content= $_POST['content'];
+		$query = "UPDATE post SET name='$name', content='$content' WHERE id='$id'";
+		$db->exec($query );
+		return  $query ;		
 	}
 	function get_mainMenu(){
 		$db = new DataBase();
