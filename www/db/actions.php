@@ -13,8 +13,8 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 		$name = $_POST['name'];
 		$content= $_POST['content'];
 		$query = "UPDATE post SET name='$name', content='$content' WHERE id='$id'";
-		$db->exec($query );
-		return  $query ;		
+		$res = $db->exec($query );
+		return  $_POST ;		
 	}
 	function get_mainMenu(){
 		$db = new DataBase();
