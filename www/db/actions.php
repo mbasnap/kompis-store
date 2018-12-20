@@ -5,7 +5,7 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 
 	function get_post(){
 		$db = new DataBase();
-		return  $db->get('post');
+		return  $db->get('post', $_POST);
 	}
 	function update_post(){
 		$db = new DataBase();
