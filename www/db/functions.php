@@ -6,36 +6,18 @@
 		 else return $res;
 	}
 
+	function getPost($parans){
+		$db = new DataBase();
+		$id =$parans['id'];
+		$resultSet = $db->select('post', "id='$id'");
+		return fetchArray($resultSet, 0);
+	}
+
 	function updatePost($id, $content){
 		$db = new DataBase();
 		$db->update('post', "content='$content'", "id='$id'");
 	}
 
-	function savePage($page){
-		$id = $page['post_id'];
-		if($page['post_id']) updatePost($id, $page['content']);
-		else {
-			$db = new DataBase();
-		}
-
-
-
-		$db = new DataBase();
-		$content = $params['content'];
-		$post_id = $params['post_id'];
-		$update = $db->update('post', "content='$content'");
-		$where = $db->where("id='$post_id'");
-		$db->query($update . $where);
-		return $content;
-	}
-	function getPageByName($params){
-		$db = new DataBase();
-		$name = $params['name'];
-		$resultSet = $db->select('PagesView', "name='$name'");
-		// $where = $db->where("name='$name'");
-		// $resultSet = $db->query($select . $where);
-		return fetchArray($resultSet, 0);
-	}
 	function getMainMenu(){
 		$db = new DataBase();
 		$resultSet = $db->select('mainMenu');
