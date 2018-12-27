@@ -13,9 +13,12 @@
 		return fetchArray($resultSet, 0);
 	}
 
-	function updatePost($id, $content){
+	function updatePost($post){
+		$id = $post['id'];
+		$content = $post['content'];
 		$db = new DataBase();
 		$db->update('post', "content='$content'", "id='$id'");
+		return $post;
 	}
 
 	function getMainMenu(){

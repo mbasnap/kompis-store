@@ -24,13 +24,14 @@ class DataBase extends SQLite3{
 		$update = "UPDATE '$table'";
 		$update = $update . "SET " . $set;
 		$update = $update . $this->where($where);
+		// echo $update;
 		return $this->query($update);
 	}
 
 	function select($table, $where = ''){
 		$select = "SELECT * FROM '$table'";
 		$select = $select . $this->where($where);
-		// echo $select;
+		 echo $select;
 		return $this->query($select);
 	}
 
