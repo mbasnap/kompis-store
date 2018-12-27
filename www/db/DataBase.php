@@ -31,7 +31,7 @@ class DataBase extends SQLite3{
 	function select($table, $where = ''){
 		$select = "SELECT * FROM '$table'";
 		$select = $select . $this->where($where);
-		 echo $select;
+		//  echo $select;
 		return $this->query($select);
 	}
 
