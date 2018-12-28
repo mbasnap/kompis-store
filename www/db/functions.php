@@ -24,21 +24,17 @@
 	function getMainMenu(){
 		$db = new DataBase();
 		$resultSet = $db->select('mainMenu');
-		// $resultSet = $db->query($select);
 		return fetchArray($resultSet);
 	}
 	function getLastNews(){
 		$db = new DataBase();
 		$resultSet = $db->select('news');
-		// $resultSet = $db->query($select);
 		return fetchArray($resultSet);
 	}
 
 	function company($name, $index = false){
 		$db = new DataBase();
 		$resultSet = $db->select($name, "group_id='1'");
-		// $where = $db->where("group_id='1'");
-		// $resultSet = $db->query($select . $where);
 		return fetchArray($resultSet, $index);
 	}
 
