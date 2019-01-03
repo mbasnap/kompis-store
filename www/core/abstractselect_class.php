@@ -12,7 +12,7 @@ class AbstractSelect {
 		$this->db = $db;
 	}
 	
-	public function from($table_name, $fields) {
+	public function from($table_name, $fields = "*") {
 		$table_name = $this->db->getTableName($table_name);
 		$from = "";
 		if ($fields == "*") $from = "*";
@@ -33,7 +33,7 @@ class AbstractSelect {
 	
 	public function where($where, $values = array(), $and = true) {
 		if ($where) {
-			$where = $this->db->getQuery($where, $values);
+			$where = $this->db->getQuery($where.$this->db->getSQ(), $values);
 			$this->addWhere($where, $and);
 		}
 		return $this;

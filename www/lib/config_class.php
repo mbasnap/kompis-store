@@ -10,11 +10,14 @@ abstract class Config {
 	
 	const API_KEY = "DKEL39DL";
 	
+	const DB_SQLITE_PATH = "db/kompis.com";
+
 	const DB_HOST = "localhost";
 	const DB_USER = "root";
 	const DB_PASSWORD = "";
 	const DB_NAME = "myrusakov";
-	const DB_PREFIX = "xyz_";
+	// const DB_PREFIX = "xyz_";
+	const DB_PREFIX = "";
 	const DB_SYM_QUERY = "?";
 	
 	const DIR_IMG = "/images/";

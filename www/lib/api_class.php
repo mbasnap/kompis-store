@@ -6,12 +6,12 @@ class API {
 	private $auth_user;
 	
 	public function __construct() {
-		$this->mail = new Mail();
-		try {
-			$this->auth_user = UserDB::authUser();
-		} catch (Exception $e) {
-			$this->auth_user = null;
-		}
+		// $this->mail = new Mail();
+		// try {
+		// 	$this->auth_user = UserDB::authUser();
+		// } catch (Exception $e) {
+		// 	$this->auth_user = null;
+		// }
 	}
 	
 	public function edit($obj, $value, $name, $type) {
@@ -38,18 +38,24 @@ class API {
 		}
 	}
 	
+	public function get($objName) {
+		$class = $objName."DB";
+		$obj = new $class();
+		return $objName;
+	}
+	
 	public function delete($obj, $id) {
 		$class = $obj."DB";
 		$obj = new $class();
 		$obj->load($id);
-		if ($obj->accessDelete($this->auth_user)) {
-			try {
-				if (!$obj->delete()) throw new Exception();
-				return true;
-			} catch (Exception $e) {
-				return false;
-			}
-		}
+		 if ($obj->accessDelete($this->auth_user)) {
+		 	try {
+		 		if (!$obj->delete()) throw new Exception();
+		 		return true;
+		 	} catch (Exception $e) {
+		 		return false;
+		 	}
+		 }
 		return false;
 	}
 	

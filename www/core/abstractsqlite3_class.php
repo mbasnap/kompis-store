@@ -1,18 +1,22 @@
-﻿<?php
+<?php
 
-abstract class AbstractDataBase {
+abstract class AbstractSqlite3 {
 
 	private $mysqli;
 	private $sq;
 	private $prefix;
 	
-	protected function __construct($db_host, $db_user, $db_password, $db_name, $sq, $prefix) {
-		$this->mysqli = @new mysqli($db_host, $db_user, $db_password, $db_name);
-		if ($this->mysqli->connect_errno) exit("Ошибка соединения с базой данных");
+	protected function __construct($db_path, $sq, $prefix) {
+        // echo print_r (SQLite3::version());
+
+
+		$this->mysqli = new SQLite3($db_path);
+
+		// if ($this->mysqli->connect_errno) exit("Ошибка соединения с базой данных");
 		$this->sq = $sq;
 		$this->prefix = $prefix;
-		$this->mysqli->query("SET lc_time_names = 'ru_RU'");
-		$this->mysqli->set_charset("utf8");
+		// $this->mysqli->query("SET lc_time_names = 'ru_RU'");
+		// $this->mysqli->set_charset("utf8");
 	}
 	
 	public function getSQ() {
@@ -26,27 +30,58 @@ abstract class AbstractDataBase {
 			for ($i = 0; $i < count($params); $i++) {
 				$pos = strpos($query, $this->sq, $offset);
 				if (is_null($params[$i])) $arg = "NULL";
-				else $arg = "'".$this->mysqli->real_escape_string($params[$i])."'";
+				else $arg = "'".$this->mysqli->escapeString($params[$i])."'";
 				$query = substr_replace($query, $arg, $pos, $len_sq);
 				$offset = $pos + strlen($arg);
 			}
 		}
 		return $query;
 	}
+
+
+
+	public function update($table_name, $row, $where = false, $params = array()) {
+		// if (count($row) == 0) return false;
+		$table_name = $this->getTableName($table_name);
+		$query = "UPDATE `$table_name` SET ";
+		$params_add = array();
+		foreach ($row as $key => $value) {
+			$query .= "`$key` = ".$this->sq.",";
+			$params_add[] = $value;
+		}
+		$query = substr($query, 0, -1);
+		if ($where) {
+			$params = array_merge($params_add, $params);
+			$query .= " WHERE $where";
+		}
+		// return $query;
+		return $this->query($query, $params);
+	}
 	
-	public function select(AbstractSelect $select) {
+	public function select(AbstractSelect $select, $class = false) {
 		$result_set = $this->getResultSet($select, true, true);
 		if (!$result_set) return false;
 		$array = array();
-		while (($row = $result_set->fetch_assoc()) != false)
-			$array[] = $row;
+		while (($row = $result_set->fetchArray()) != false)
+			if(!$class) $array[] = $row;
+			else {
+				$obj = new $class($row);
+				$array[$row['id']] = $obj->serialize();
+			}
 		return $array;
+	}
+
+	public function fetchArray($resultSet, $index = false){
+		$res = array();
+		 while ($row = $resultSet->fetchArray()) $res[] = $row;
+		 if (is_numeric($index)) return $res[$index];
+		 else return $res;
 	}
 	
 	public function selectRow(AbstractSelect $select) {
 		$result_set = $this->getResultSet($select, false, true);
 		if (!$result_set) return false;
-		return $result_set->fetch_assoc();
+		return $this->fetchArray($result_set, 0);
 	}
 	
 	public function selectCol(AbstractSelect $select) {
@@ -88,22 +123,7 @@ abstract class AbstractDataBase {
 		return $this->query($query, $params);
 	}
 	
-	public function update($table_name, $row, $where = false, $params = array()) {
-		if (count($row) == 0) return false;
-		$table_name = $this->getTableName($table_name);
-		$query = "UPDATE `$table_name` SET ";
-		$params_add = array();
-		foreach ($row as $key => $value) {
-			$query .= "`$key` = ".$this->sq.",";
-			$params_add[] = $value;
-		}
-		$query = substr($query, 0, -1);
-		if ($where) {
-			$params = array_merge($params_add, $params);
-			$query .= " WHERE $where";
-		}
-		return $this->query($query, $params);
-	}
+
 	
 	public function delete($table_name, $where = false, $params = array()) {
 		$table_name = $this->getTableName($table_name);
@@ -117,22 +137,25 @@ abstract class AbstractDataBase {
 	}
 	
 	private function query($query, $params = false) {
-		$success = $this->mysqli->query($this->getQuery($query, $params));
-		if (!$success) return false;
-		if ($this->mysqli->insert_id === 0) return true;
-		return $this->mysqli->insert_id;
+		// $success = $this->mysqli->query($this->getQuery($query, $params));
+		// if (!$success) return false;
+		// if ($this->mysqli->insert_id === 0) return true;
+		// return $this->mysqli->insert_id;
+		return  $this->mysqli->query($this->getQuery($query, $params));
 	}
 	
 	private function getResultSet(AbstractSelect $select, $zero, $one) {
+		//  echo $select;
 		$result_set = $this->mysqli->query($select);
 		if (!$result_set) return false;
-		if ((!$zero) && ($result_set->num_rows == 0)) return false;
-		if ((!$one) && ($result_set->num_rows == 1)) return false;
+		// echo var_dump($result_set);
+		// if ((!$zero) && ($result_set->num_rows == 0)) return false;
+		// if ((!$one) && ($result_set->num_rows == 1)) return false;
 		return $result_set;
 	}
 	
 	public function __destruct() {
-		if (($this->mysqli) && (!$this->mysqli->connect_errno)) $this->mysqli->close();
+		// if (($this->mysqli) && (!$this->mysqli->connect_errno)) $this->mysqli->close();
 	}
 	
 }
