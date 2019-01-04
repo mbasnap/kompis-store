@@ -30,7 +30,7 @@ class MenuDB extends ObjectDB {
 		$select = new Select(self::$db);
 		$select->from(self::$table);
 		// $select->where("`category` = ", array('1'));
-		return self::$db->select($select, __CLASS__);
+		return self::$db->select($select);
 	 }
 
 

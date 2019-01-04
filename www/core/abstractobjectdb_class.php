@@ -10,7 +10,7 @@ abstract class AbstractObjectDB {
 	
 	private $format_date = "";
 	
-	private $id = null;
+	// private $id = null;
 	private $properties = array();
 	
 	protected $table_name = "";
@@ -25,54 +25,34 @@ abstract class AbstractObjectDB {
 	}
 	
 	public function load($id) {
-		$id = (int) $id;
-		if ( $id < 0) return false;
 		 $select = new Select(self::$db);
-		$select = $select->from($this->table_name, $this->getSelectFields())
-			->where("`id` = ".self::$db->getSQ(), array($id));
-		$row = self::$db->selectRow($select);
-		if (!$row) return false;
-		if ($this->init($row)) return $this->postLoad();
+		$select = $select->from($this->table_name);
+		$select->where("`id` = ", array($id));
+		return self::$db->select($select, 0);
 	}
 	
 	
-	public function isSaved() {
-		return $this->getID() > 0;
-	}
+	// public function isSaved() {
+	// 	return $this->getID() > 0;
+	// }
 	
-	public function getID() {
-		return (int) $this->id;
-	}
+	//  public function getID() {
+	//  	return (int) $this->id;
+	//  }
+	
+
 	
 	public function save() {
-		$update = $this->isSaved();
-		// if ($update) $commit = $this->preUpdate();
-		// else $commit = $this->preInsert();
-		// if (!$commit) return false;
-		// $row = array();
-		// foreach ($this->properties as $key => $value) {
-		// 	switch ($value["type"]) {
-		// 		case self::TYPE_TIMESTAMP:
-		// 			if (!is_null($value["value"])) $value["value"] = strtotime($value["value"]);
-		// 			break;
-		// 		case self::TYPE_IP:
-		// 			if (!is_null($value["value"])) $value["value"] = ip2long($value["value"]);
-		// 			break;
-		// 	}
-		// 	$row[$key] = $value["value"];
-		// }
-		if (count($row) > 0) {
-			if ($update) {
-				$success = self::$db->update($this->table_name, $row, "`id` = ".self::$db->getSQ(), array($this->getID()));
-				if (!$success) throw new Exception();
+
+		$row = $this->serialize();
+			if ($this->id) {
+				 if(!$this->load($this->id)) return false;
+				 self::$db->update($this->table_name, $row, "`id` = ".self::$db->getSQ(), array($this->id));
 			}
 			else {
 				$this->id = self::$db->insert($this->table_name, $row);
-				if (!$this->id) throw new Exception();
 			}
-		}
-		if ($update) return $this->postUpdate();
-		return $this->postInsert();
+		return $this;
 	}
 	
 	public function delete() {
@@ -84,31 +64,25 @@ abstract class AbstractObjectDB {
 		return $this->postDelete();
 	}
 	
-	public function __set($name, $value) {
-		if (array_key_exists($name, $this->properties)) {
-			$this->properties[$name]["value"] = $value;
-			return true;
-		}
-		else $this->$name = $value;
-	}
+	// public function __set($name, $value) {
+	// 	if (array_key_exists($name, $this->properties)) {
+	// 		$this->properties[$name]["value"] = $value;
+	// 		return true;
+	// 	}
+	// 	else $this->$name = $value;
+	// }
 		
-	public function __get($name) {
-		if ($name == "id") return $this->getID();
-		return array_key_exists($name, $this->properties)? $this->properties[$name]["value"]: null;
-	}
+	// public function __get($name) {
+	// 	if ($name == "id") return $this->getID();
+	// 	return array_key_exists($name, $this->properties)? $this->properties[$name]["value"]: null;
+	// }
 	
-	public static function buildMultiple($class, $data) {
+	public static function buildMultiple($data) {
+		$class = get_called_class();
 		$res = array();
-		
-		// if (!class_exists($class)) throw new Exception();
-		
-		// $test_obj = new $class();
-		// if (!$test_obj instanceof AbstractObjectDB) throw new Exception();
 		foreach ($data as $row) {
 			$obj = new $class($row);
-			// $obj->init($row);
-
-			$res[$obj->id] = $obj->serialize();
+			$res[$row['id']] = $obj->serialize();
 		}
 		return $res;
 	}
